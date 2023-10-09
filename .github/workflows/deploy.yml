@@ -1,0 +1,32 @@
+name: Fly.io Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Create and Deploy to Fly.io
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Fly CLI
+        run: |
+          curl -L https://fly.io/install.sh | sh
+          export PATH="$HOME/.fly/bin:$PATH"
+
+      - name: Log in to Fly.io
+        run: |
+          $HOME/.fly/bin/flyctl auth login --email "${{ secrets.FLY_EMAIL }}" --password "${{ secrets.FLY_PASSWORD }}"
+
+      - name: Create Fly.io app
+        run: |
+          $HOME/.fly/bin/flyctl apps create sinhalasub
+
+      - name: Deploy to Fly.io
+        run: |
+          $HOME/.fly/bin/flyctl deploy --app darkdevil
