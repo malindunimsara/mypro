@@ -23,10 +23,5 @@ jobs:
         run: |
           $HOME/.fly/bin/flyctl auth login --email "${{ secrets.FLY_EMAIL }}" --password "${{ secrets.FLY_PASSWORD }}"
 
-      - name: Create Fly.io app
+      - name: Get API Token
         run: |
-          $HOME/.fly/bin/flyctl apps create sinhalasub
-
-      - name: Deploy to Fly.io
-        run: |
-          $HOME/.fly/bin/flyctl deploy --app darkdevil
