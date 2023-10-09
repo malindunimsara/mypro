@@ -25,7 +25,7 @@ jobs:
 
       - name: Create Fly.io app
         run: |
-          $HOME/.fly/bin/flyctl apps create sinhalasub
+          $HOME/.fly/bin/flyctl apps create darkdevil
 
       - name: Deploy to Fly.io
         run: |
