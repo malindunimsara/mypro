@@ -24,9 +24,14 @@ jobs:
           $HOME/.fly/bin/flyctl auth login --email "${{ secrets.FLY_EMAIL }}" --password "${{ secrets.FLY_PASSWORD }}"
 
       - name: Get API Token
+        id: api_token
         run: |
           api_token=$($HOME/.fly/bin/flyctl auth token)
-          echo "::set-env name=FLY_API_TOKEN::$api_token"
+          echo "::set-output name=FLY_API_TOKEN::$api_token"
         env:
           FLY_EMAIL: ${{ secrets.FLY_EMAIL }}
           FLY_PASSWORD: ${{ secrets.FLY_PASSWORD }}
+
+      - name: Display API Token
+        run: |
+          echo "Fly.io API Token: ${{ steps.api_token.outputs.FLY_API_TOKEN }}"
