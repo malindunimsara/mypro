@@ -21,7 +21,7 @@ jobs:
 
       - name: Log in to Fly.io
         run: |
-          $HOME/.fly/bin/flyctl auth token "${{ secrets.FLY_API_TOKEN }}"
+          echo "${{ secrets.FLY_API_TOKEN }}" | $HOME/.fly/bin/flyctl auth login
 
       - name: Create Fly.io app
         run: |
