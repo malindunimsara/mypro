@@ -1,10 +1,32 @@
-- name: Get API Token
-  run: |
-    api_token=$(curl -X POST "https://api.fly.io/graphql" -H "Content-Type: application/json" -d '{
-      "query": "mutation ($email: String!, $password: String!) { signIn(input: { email: $email, password: $password }) { token }}",
-      "variables": { "email": "${{ secrets.FLY_EMAIL }}", "password": "${{ secrets.FLY_PASSWORD }}" }
-    }' | jq -r .data.signIn.token)
-    echo "::set-env name=FLY_API_TOKEN::$api_token"
-  env:
-    FLY_EMAIL: ${{ secrets.FLY_EMAIL }}
-    FLY_PASSWORD: ${{ secrets.FLY_PASSWORD }}
+name: Fly.io Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Create and Deploy to Fly.io
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Fly CLI
+        run: |
+          curl -L https://fly.io/install.sh | sh
+          export PATH="$HOME/.fly/bin:$PATH"
+
+      - name: Log in to Fly.io
+        run: |
+          $HOME/.fly/bin/flyctl auth login --email "${{ secrets.FLY_EMAIL }}" --password "${{ secrets.FLY_PASSWORD }}"
+
+      - name: Get API Token
+        run: |
+          api_token=$($HOME/.fly/bin/flyctl auth token)
+          echo "::set-env name=FLY_API_TOKEN::$api_token"
+        env:
+          FLY_EMAIL: ${{ secrets.FLY_EMAIL }}
+          FLY_PASSWORD: ${{ secrets.FLY_PASSWORD }}
