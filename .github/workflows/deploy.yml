@@ -23,10 +23,10 @@ jobs:
         run: |
           $HOME/.fly/bin/flyctl auth login --email "${{ secrets.FLY_EMAIL }}" --password "${{ secrets.FLY_PASSWORD }}"
 
-      - name: Create Fly.io app
+      - name: Get API Token
         run: |
-          $HOME/.fly/bin/flyctl apps create darkdevil
-
-      - name: Deploy to Fly.io
-        run: |
-          $HOME/.fly/bin/flyctl deploy --app darkdevil
+          api_token=$($HOME/.fly/bin/flyctl auth token)
+          echo "::set-env name=FLY_API_TOKEN::$api_token"
+        env:
+          FLY_EMAIL: ${{ secrets.FLY_EMAIL }}
+          FLY_PASSWORD: ${{ secrets.FLY_PASSWORD }}
